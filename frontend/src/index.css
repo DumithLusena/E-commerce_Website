@@ -26,3 +26,9 @@ a.active hr{
     color: white;
   }
 }
+
+@layer base {
+  *, ::before, ::after { @apply border-gray-300; }
+  hr { @apply border-gray-300; }
+}
+
