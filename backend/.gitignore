@@ -24,3 +24,6 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Uploads (do not commit runtime uploads)
+uploads/
