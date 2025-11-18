@@ -23,15 +23,23 @@ const addProduct = async (req, res) => {
             })
         );
 
+        let parsedSizes = [];
+        if (Array.isArray(sizes)) {
+            parsedSizes = sizes;
+        } else if (typeof sizes === 'string' && sizes.trim()) {
+            try { parsedSizes = JSON.parse(sizes); } catch { parsedSizes = []; }
+        }
+        const bestSellerFlag = (bestSeller === 'true' || bestSeller === true) || (bestseller === 'true' || bestseller === true);
+
         const productData = {
             name,
             description,
             price: Number(price),
             category,
             subCategory,
-            sizes: JSON.parse(sizes),
-            bestseller: bestSeller === 'true' ? true : false,
-            image: imageUrls, 
+            sizes: parsedSizes,
+            bestSeller: bestSellerFlag,
+            image: imageUrls,
             date: Date.now()
         };
 
