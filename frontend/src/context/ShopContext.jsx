@@ -25,6 +25,7 @@ const ShopContextProvider = (props) => {
     useEffect(() => {
         if (!token && localStorage.getItem('token')) {
             setToken(localStorage.getItem('token'));
+            getUserCart(localStorage.getItem('token'));
         }
     },[])
 
@@ -48,6 +49,16 @@ const ShopContextProvider = (props) => {
             cartData[itemId][size] = 1;
         }
         setCartItems(cartData);
+
+        if (token) {
+            try {
+
+                await axios.post(backendUrl + '/api/cart/add', {itemId,size}, {headers:{token}})
+                
+            } catch (error) {
+                toast.error(error.message);
+            }
+        }
     }
 
     const getCartCount = () => {
@@ -73,6 +84,14 @@ const ShopContextProvider = (props) => {
         let cartData = structuredClone(cartItems);
         cartData[itemId][size] = quantity;  
         setCartItems(cartData);
+
+        if (token) {
+           try {
+               await axios.put(backendUrl + '/api/cart/update', { itemId, size, quantity }, { headers: { token } });
+           } catch (error) {
+               toast.error(error.message);
+           }
+        }
     }
 
     const getCartAmount = () => {
@@ -97,7 +116,6 @@ const ShopContextProvider = (props) => {
         try {
 
             const response = await axios.get(backendUrl + '/api/product/list');
-            console.log(response.data);
             if (response.data.success) {
                 setProducts(response.data.products);
             } else {
@@ -109,13 +127,25 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    const getUserCart = async (overrideToken) => {
+        try {
+            const activeToken = overrideToken || token || localStorage.getItem('token');
+            if (!activeToken) { return; }
+            const response = await axios.get(backendUrl + '/api/cart/get', { headers: { token: activeToken } });
+            console.log(response.data.cartData);
+            if (response.data.success) { setCartItems(response.data.cartData); }
+        } catch (error) {
+            console.log('cart/get error', error.response?.status, error.response?.data || error.message);
+        }
+    }
+
     const value = {
         products, currency, delivery_free,
         search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart,
         getCartCount, updateQuantity, getCartAmount,
         navigate, backendUrl,getProductsData,
-        token,setToken
+        token,setToken,getUserCart
     }
 
     return (
