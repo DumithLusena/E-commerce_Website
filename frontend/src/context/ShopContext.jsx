@@ -10,7 +10,7 @@ const ShopContextProvider = (props) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
     const currency = '$';
-    const delivery_free = 10;
+    const delivery_fee = 10;
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
@@ -132,7 +132,6 @@ const ShopContextProvider = (props) => {
             const activeToken = overrideToken || token || localStorage.getItem('token');
             if (!activeToken) { return; }
             const response = await axios.get(backendUrl + '/api/cart/get', { headers: { token: activeToken } });
-            console.log(response.data.cartData);
             if (response.data.success) { setCartItems(response.data.cartData); }
         } catch (error) {
             console.log('cart/get error', error.response?.status, error.response?.data || error.message);
@@ -140,9 +139,9 @@ const ShopContextProvider = (props) => {
     }
 
     const value = {
-        products, currency, delivery_free,
+        products, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
-        cartItems, addToCart,
+        cartItems, addToCart,setCartItems,
         getCartCount, updateQuantity, getCartAmount,
         navigate, backendUrl,getProductsData,
         token,setToken,getUserCart
