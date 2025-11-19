@@ -1,4 +1,4 @@
-# 🚀 MERN E‑Commerce Monorepo
+# 🚀 MERN E‑Commerce
 
 Full‑stack MERN shop with customer storefront, admin dashboard, product management (create/update with images), cart, authentication, and filtering.
 
