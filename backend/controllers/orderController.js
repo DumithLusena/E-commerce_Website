@@ -1,3 +1,4 @@
+import { currency } from '../../admin/src/App.jsx';
 import orderModel from '../models/orderModel.js';
 import userModel from '../models/userModel.js';
 
@@ -41,17 +42,42 @@ const placeOrderRazorpay = async (req, res) => {
 
 // All Orders data for Admin Panel
 const allOrders = async (req, res) => {
+    try {
+        
+        const orders = await orderModel.find({});
+        res.json({ success: true, orders });
 
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
 }
 
 // User Orders data for Frontend
 const userOrders = async (req, res) => {
+    try {
+        
+        const { userId } = req.body;
 
+        const orders = await orderModel.find({ userId });
+        res.json({ success: true, orders });
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
 }
 
 // Update Order Status for Admin Panel
 const updateStatus = async (req, res) => {
+    try {
+        
+        const { orderId, status } = req.body;
 
+        await orderModel.findByIdAndUpdate(orderId, { status });
+        res.json({ success: true, message: 'Order Status Updated' });
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
 }
 
 export { placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus }
